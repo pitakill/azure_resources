@@ -8,9 +8,12 @@ import (
 	"log"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
+	"github.com/Azure/go-autorest/autorest"
+	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/Azure/go-autorest/autorest/azure/auth"
 )
+
+var authorizer autorest.Authorizer
 
 type resource interface {
 	GetProperties() ([]byte, error)
@@ -18,11 +21,7 @@ type resource interface {
 
 func GetAllByGroupName(subscriptionID, groupName string) []resource {
 	client := resources.NewClient(subscriptionID)
-
-	authorizer, err := auth.NewAuthorizerFromFile(azure.PublicCloud.ResourceManagerEndpoint)
-	if err == nil {
-		client.Authorizer = authorizer
-	}
+	client.Authorizer = authorizer
 
 	results, err := client.ListByResourceGroup(context.Background(), groupName, "", "", nil)
 	if err != nil {
@@ -47,4 +46,17 @@ func GetAllByGroupName(subscriptionID, groupName string) []resource {
 	}
 
 	return resources
+}
+
+func SetAuthorizer(tenantID, clientID, clientSecret string) error {
+	oauthConfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, tenantID)
+	if err != nil {
+		return err
+	}
+	spToken, err := adal.NewServicePrincipalToken(*oauthConfig, clientID, clientSecret, azure.PublicCloud.ResourceManagerEndpoint)
+	if err != nil {
+		return err
+	}
+	authorizer = autorest.NewBearerAuthorizer(spToken)
+	return nil
 }
