@@ -15,11 +15,11 @@ import (
 
 var authorizer autorest.Authorizer
 
-type resource interface {
+type Resource interface {
 	GetProperties() ([]byte, error)
 }
 
-func GetAllByGroupName(subscriptionID, groupName string) []resource {
+func GetAllByGroupName(subscriptionID, groupName string) []Resource {
 	client := resources.NewClient(subscriptionID)
 	client.Authorizer = authorizer
 
@@ -28,7 +28,7 @@ func GetAllByGroupName(subscriptionID, groupName string) []resource {
 		log.Fatalln(err)
 	}
 
-	var resources []resource
+	var resources []Resource
 
 	for _, resource := range results.Values() {
 		switch *resource.Type {
