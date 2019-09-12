@@ -16,6 +16,11 @@ type {{ $.Type }}{{ Title . }} struct{
 	groupName      string
 	resourceName   *string
 	authorizer     autorest.Authorizer
+	resource       {{ ToLower $.Type }}.{{ CapitalizeAndSingularize . }}
+}
+
+func (r *{{ $.Type }}{{ Title . }}) GetId() *string {
+	return r.resource.ID
 }
 
 func (r *{{ $.Type }}{{ Title . }}) GetProperties() ([]byte, error) {
@@ -26,6 +31,8 @@ func (r *{{ $.Type }}{{ Title . }}) GetProperties() ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
+
+	r.resource = resource
 
 	return resource.MarshalJSON()
 }

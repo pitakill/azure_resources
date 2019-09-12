@@ -12,11 +12,12 @@ import (
 var (
 	now      = time.Now()
 	tplFuncs = template.FuncMap{
-		"Title":            strings.Title,
-		"ToLower":          strings.ToLower,
-		"GetType":          getType,
-		"GetResourceTitle": getResourceTitle,
-		"GetParameters":    getParameters,
+		"Title":                    strings.Title,
+		"ToLower":                  strings.ToLower,
+		"GetType":                  getType,
+		"GetResourceTitle":         getResourceTitle,
+		"GetParameters":            getParameters,
+		"CapitalizeAndSingularize": capitalizeAndSingularize,
 	}
 )
 
@@ -41,7 +42,14 @@ func getResource(s string) string {
 }
 
 func singularize(s string) string {
-	return strings.TrimRight(s, "s")
+	return strings.TrimSuffix(s, "s")
+}
+
+func capitalizeAndSingularize(s string) string {
+	if strings.Contains(s, "Addresses") {
+		return strings.Title(strings.TrimSuffix(s, "es"))
+	}
+	return strings.Title(singularize(s))
 }
 
 func getResourceTitle(s string) string {
