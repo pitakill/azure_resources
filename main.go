@@ -25,7 +25,7 @@ func GetAllByGroupName(subscriptionID, groupName string) []Resource {
 
 	results, err := client.ListByResourceGroup(context.Background(), groupName, "", "", nil)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic(err)
 	}
 
 	var resources []Resource
