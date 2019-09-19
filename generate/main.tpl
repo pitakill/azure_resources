@@ -5,7 +5,6 @@ package azure_resources
 
 import (
 	"context"
-	"log"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
@@ -15,20 +14,20 @@ import (
 
 var authorizer autorest.Authorizer
 
-type resource interface {
+type Resource interface {
 	GetProperties() ([]byte, error)
 }
 
-func GetAllByGroupName(subscriptionID, groupName string) []resource {
+func GetAllByGroupName(subscriptionID, groupName string) ([]Resource, error) {
 	client := resources.NewClient(subscriptionID)
 	client.Authorizer = authorizer
 
 	results, err := client.ListByResourceGroup(context.Background(), groupName, "", "", nil)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	var resources []resource
+	var resources []Resource
 
 	for _, resource := range results.Values() {
 		switch *resource.Type {
@@ -45,7 +44,7 @@ func GetAllByGroupName(subscriptionID, groupName string) []resource {
 		}
 	}
 
-	return resources
+	return resources, nil
 }
 
 func SetAuthorizer(tenantID, clientID, clientSecret string) error {

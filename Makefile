@@ -12,7 +12,7 @@ go-generate:
 
 go-test:
 	@echo "  >  Testing"
-	go test -race .
+	go test -race . $(ARGS)
 
 go-test-clean:
 	@echo "  >  Cleaning test"
@@ -20,4 +20,4 @@ go-test-clean:
 
 go-test-verbose:
 	@echo "  >  Testing verbosely"
-	go test -v . -race
+	go test -v -race . $(ARGS)
