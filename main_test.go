@@ -36,6 +36,7 @@ func TestGetAllByGroupName(t *testing.T) {
 
 	for _, r := range resources {
 		props, err := r.GetProperties()
+		t.Logf("%s -> %s", *r.GetName(), *r.GetId())
 		if err != nil {
 			t.Error(err)
 		}

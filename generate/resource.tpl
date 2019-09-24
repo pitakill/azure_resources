@@ -23,6 +23,10 @@ func (r *{{ $.Type }}{{ Title . }}) GetId() *string {
 	return r.resource.ID
 }
 
+func (r *{{ $.Type }}{{ Title . }}) GetName() *string {
+	return r.resource.Name
+}
+
 func (r *{{ $.Type }}{{ Title . }}) GetProperties() ([]byte, error) {
 	client := {{ ToLower $.Type }}.New{{ Title . }}Client(r.subscriptionID)
 	client.Authorizer = r.authorizer

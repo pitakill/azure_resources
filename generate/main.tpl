@@ -17,6 +17,7 @@ var authorizer autorest.Authorizer
 type Resource interface {
 	GetProperties() ([]byte, error)
 	GetId()         *string
+	GetName()       *string
 }
 
 func GetAllByGroupName(subscriptionID, groupName string) ([]Resource, error) {
